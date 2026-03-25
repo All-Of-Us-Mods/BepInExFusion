@@ -22,6 +22,11 @@ internal static class FusionCoreEntrypoint
         var silentExceptionLog = Environment.GetEnvironmentVariable("BEPINEX_PRELOADER_LOG") ??
                                  $"preloader_{DateTime.Now:yyyyMMdd_HHmmss_fff}.log";
 
+        AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
+        {
+            Console.WriteLine(args.ExceptionObject.ToString());
+        };
+
         try
         {
             EnvVars.LoadVars();

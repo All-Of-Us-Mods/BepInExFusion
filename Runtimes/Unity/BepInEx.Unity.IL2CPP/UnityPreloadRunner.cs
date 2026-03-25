@@ -10,12 +10,10 @@ internal static class UnityPreloaderRunner
 {
     public static void PreloaderMain()
     {
-        var bepinPath = Path.GetDirectoryName(Path.GetDirectoryName(Path.GetFullPath(EnvVars.FUSION_BEPINEX_PATH)));
-
         PlatformUtils.SetPlatform();
 
         Paths.SetExecutablePath(EnvVars.FUSION_GAME_BINARY,
-                                bepinPath, 
+                                EnvVars.FUSION_BEPINEX_PATH, 
                                 EnvVars.FUSION_GAME_DATA_DIR);
 
         // Cecil 0.11 requires one to manually set up list of trusted assemblies for assembly resolving

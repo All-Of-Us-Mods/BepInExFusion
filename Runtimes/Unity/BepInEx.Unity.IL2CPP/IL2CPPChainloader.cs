@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using BepInEx.Bootstrap;
@@ -9,7 +10,9 @@ using BepInEx.Preloader.Core.Logging;
 using BepInEx.Unity.IL2CPP.Hook;
 using BepInEx.Unity.IL2CPP.Logging;
 using BepInEx.Unity.IL2CPP.Utils;
+using Il2CppInterop.Common.XrefScans;
 using Il2CppInterop.Runtime.InteropTypes;
+using MonoMod.Utils;
 using UnityEngine;
 using Logger = BepInEx.Logging.Logger;
 
@@ -58,7 +61,21 @@ public class IL2CPPChainloader : BaseChainloader<BasePlugin>
         base.Initialize(gameExePath);
         Instance = this;
 
-        if (!NativeLibrary.TryLoad("GameAssembly", typeof(IL2CPPChainloader).Assembly, null, out var il2CppHandle))
+        string gameLibraryName;
+        if (PlatformDetection.OS is OSKind.Windows or OSKind.OSX)
+        {
+            gameLibraryName = "GameAssembly";
+        }
+        else if (PlatformDetection.OS is OSKind.Linux or OSKind.Android)
+        {
+            gameLibraryName = "libil2cpp.so";
+        }
+        else
+        {
+            throw new PlatformNotSupportedException("Unsupported platform!");
+        }
+
+        if (!NativeLibrary.TryLoad(gameLibraryName, typeof(IL2CPPChainloader).Assembly, null, out var il2CppHandle))
         {
             Logger.Log(LogLevel.Fatal,
                        "Could not locate Il2Cpp game assembly (GameAssembly.dll, UserAssembly.dll or libil2cpp.so). The game might be obfuscated or use a yet unsupported build of Unity.");
@@ -66,6 +83,8 @@ public class IL2CPPChainloader : BaseChainloader<BasePlugin>
         }
 
         var runtimeInvokePtr = NativeLibrary.GetExport(il2CppHandle, "il2cpp_runtime_invoke");
+        runtimeInvokePtr = XrefScannerLowLevel.JumpTargets(runtimeInvokePtr).First();
+        
         PreloaderLogger.Log.Log(LogLevel.Debug, $"Runtime invoke pointer: 0x{runtimeInvokePtr.ToInt64():X}");
         RuntimeInvokeDetourDelegate invokeMethodDetour = OnInvokeMethod;
 
