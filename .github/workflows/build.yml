@@ -50,7 +50,7 @@ jobs:
                 uses: actions/upload-artifact@v4
                 with:
                     path: |
-                        "./bin/dist/*.zip"
-                        "./bin/NuGet/*.nupkg"
+                        ./bin/dist/*.zip
+                        ./bin/NuGet/*.nupkg
                     name: "BepInEx_CI_${{ steps.info.outputs.build_type }}_${{ steps.info.outputs.sha_short }}_${{ steps.info.outputs.build_id || 0 }}"
       
