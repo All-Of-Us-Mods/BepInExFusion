@@ -40,8 +40,7 @@ internal static partial class Il2CppInteropManager
 {
     static Il2CppInteropManager()
     {
-        InstructionSetRegistry.RegisterInstructionSet<X86InstructionSet>(DefaultInstructionSets.X86_32);
-        InstructionSetRegistry.RegisterInstructionSet<X86InstructionSet>(DefaultInstructionSets.X86_64);
+        InstructionSetRegistry.RegisterInstructionSet<NewArmV8InstructionSet>(DefaultInstructionSets.ARM_V8);
         LibCpp2IlBinaryRegistry.RegisterBuiltInBinarySupport();
     }
 
