@@ -46,12 +46,26 @@ public static class UnityInfo
     /// </remarks>
     public static UnityVersion Version { get; private set; }
 
-    internal static void Initialize(string unityPlayerPath, string gameDataPath)
+    internal static void Initialize(string unityPlayerPath, string gameDataPath, string overrideUnityVersion = null)
     {
         if (initialized)
             return;
         PlayerPath = Path.GetFullPath(unityPlayerPath ?? throw new ArgumentNullException(nameof(unityPlayerPath)));
         GameDataPath = Path.GetFullPath(gameDataPath ?? throw new ArgumentNullException(nameof(gameDataPath)));
+        
+        if (overrideUnityVersion != null)
+        {
+            try
+            {
+                Version = UnityVersion.Parse(overrideUnityVersion);
+                initialized = true;
+                return;
+            }
+            catch
+            {
+                // Ignored
+            }
+        }
 
         DetermineVersion();
         initialized = true;

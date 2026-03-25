@@ -103,7 +103,7 @@ internal static partial class Il2CppInteropManager
 
     private static readonly ConfigEntry<string> GlobalMetadataPath = ConfigFile.CoreConfig.Bind(
      "IL2CPP", "GlobalMetadataPath",
-     "{GameDataPath}/il2cpp_data/Metadata/global-metadata.dat",
+     "{GameDataPath}/il2cpp/Metadata/global-metadata.dat",
      new StringBuilder()
          .AppendLine("The path to the IL2CPP metadata file.")
          .AppendLine("Supports the following placeholders:")
@@ -119,8 +119,7 @@ internal static partial class Il2CppInteropManager
     private static bool initialized;
 
     public static string GameAssemblyPath => Environment.GetEnvironmentVariable("BEPINEX_GAME_ASSEMBLY_PATH") ??
-                                             Path.Combine(Paths.GameRootPath,
-                                                          "GameAssembly." + PlatformHelper.LibrarySuffix);
+                                             Path.Combine(Paths.GameRootPath, "GameAssembly.dll");
 
     private static string HashPath => Path.Combine(IL2CPPInteropAssemblyPath, "assembly-hash.txt");
 
@@ -244,7 +243,7 @@ internal static partial class Il2CppInteropManager
         Il2CppInteropRuntime.Create(new RuntimeConfiguration
                             {
                                 UnityVersion = new Version(unityVersion.Major, unityVersion.Minor, unityVersion.Build),
-                                DetourProvider = new Il2CppInteropDetourProvider()
+                                DetourProvider = new NativeDetourProvider()
                             })
                             .AddLogger(interopLogger)
                             .AddHarmonySupport()

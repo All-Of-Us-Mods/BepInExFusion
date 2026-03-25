@@ -10,13 +10,13 @@ internal static class UnityPreloaderRunner
 {
     public static void PreloaderMain()
     {
-        var bepinPath =
-            Path.GetDirectoryName(Path.GetDirectoryName(Path.GetFullPath(EnvVars.DOORSTOP_INVOKE_DLL_PATH)));
+        var bepinPath = Path.GetDirectoryName(Path.GetDirectoryName(Path.GetFullPath(EnvVars.FUSION_BEPINEX_PATH)));
 
         PlatformUtils.SetPlatform();
 
-        Paths.SetExecutablePath(EnvVars.DOORSTOP_PROCESS_PATH, bepinPath, EnvVars.DOORSTOP_MANAGED_FOLDER_DIR, false,
-                                EnvVars.DOORSTOP_DLL_SEARCH_DIRS);
+        Paths.SetExecutablePath(EnvVars.FUSION_GAME_BINARY,
+                                bepinPath, 
+                                EnvVars.FUSION_GAME_DATA_DIR);
 
         // Cecil 0.11 requires one to manually set up list of trusted assemblies for assembly resolving
         // The main BCL path
