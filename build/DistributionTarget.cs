@@ -36,6 +36,7 @@ readonly struct DistributionTarget
         "win"   => "Windows",
         "linux" => "Linux",
         "macos" => "macOS",
+        "android" => "Android",
         var _   => throw new NotSupportedException($"OS {Os} is not supported")
     };
 
@@ -44,14 +45,16 @@ readonly struct DistributionTarget
         "win"   => "dll",
         "linux" => "so",
         "macos" => "dylib",
+        "android" => "so",
         var _   => throw new NotSupportedException($"Unsupported OS: {Os}")
     };
 
     public string DllPrefix => Os switch
     {
-        "win"   => "",
-        "linux" => "lib",
-        "macos" => "lib",
-        _       => throw new NotSupportedException($"Unsupported OS: {Os}")
+        "win"     => "",
+        "linux"   => "lib",
+        "macos"   => "lib",
+        "android" => "lib",
+        _         => throw new NotSupportedException($"Unsupported OS: {Os}")
     };
 }
