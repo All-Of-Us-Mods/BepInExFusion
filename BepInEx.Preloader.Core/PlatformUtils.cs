@@ -32,46 +32,19 @@ internal static class PlatformUtils
     [DllImport("kernel32.dll", SetLastError = true)]
     private static extern IntPtr GetProcAddress(IntPtr hModule, string procName);
 
-    private static bool Is(this Platform current, Platform expected) => (current & expected) == expected;
-
     /// <summary>
     ///     Recreation of MonoMod's PlatformHelper.DeterminePlatform method, but with libc calls instead of creating processes.
     /// </summary>
     public static void SetPlatform()
     {
-        var current = Platform.Unknown;
-
-        // For old Mono, get from a private property to accurately get the platform.
-        // static extern PlatformID Platform
-        var p_Platform = typeof(Environment).GetProperty("Platform", BindingFlags.NonPublic | BindingFlags.Static);
-        string platID;
-        if (p_Platform != null)
-            platID = p_Platform.GetValue(null, new object[0]).ToString();
-        else
-            // For .NET and newer Mono, use the usual value.
-            platID = Environment.OSVersion.Platform.ToString();
-        platID = platID.ToLowerInvariant();
-
-        if (platID.Contains("win"))
-            current = Platform.Windows;
-        else if (platID.Contains("mac") || platID.Contains("osx"))
-            current = Platform.MacOS;
-        else if (platID.Contains("lin") || platID.Contains("unix"))
-            current = Platform.Linux;
-
-        if (current.Is(Platform.Linux) && Directory.Exists("/data") && File.Exists("/system/build.prop"))
-            current = Platform.Android;
-        else if (current.Is(Platform.Unix) && Directory.Exists("/System/Library/AccessibilityBundles"))
-            current = Platform.iOS;
-
-        if (current.Is(Platform.Windows))
+        if (PlatformDetection.OS is OSKind.Windows)
         {
             var windowsVersionInfo = new WindowsOSVersionInfoExW();
             RtlGetVersion(ref windowsVersionInfo);
 
-            WindowsVersion = new Version((int) windowsVersionInfo.dwMajorVersion,
-                                         (int) windowsVersionInfo.dwMinorVersion, 0,
-                                         (int) windowsVersionInfo.dwBuildNumber);
+            WindowsVersion = new Version((int)windowsVersionInfo.dwMajorVersion,
+                                         (int)windowsVersionInfo.dwMinorVersion, 0,
+                                         (int)windowsVersionInfo.dwBuildNumber);
 
             var ntDll = LoadLibrary("ntdll.dll");
             if (ntDll != IntPtr.Zero)
@@ -79,60 +52,34 @@ internal static class PlatformUtils
                 var wineGetVersion = GetProcAddress(ntDll, "wine_get_version");
                 if (wineGetVersion != IntPtr.Zero)
                 {
-                    current |= Platform.Wine;
                     // It's not safe to use the AsDelegate() extension method here because:
                     //  - It comes from the MonoMod.Utils.DynDll class, defined in MonoMod.Common.
                     //  - The DynDll class has a static constructor that reads PlatformHelper.Current.
                     //  - Reading from that property freezes it: subsequent writes will throw an exception.
                     //  - This method only sets PlatformHelper.Current at the very end.
-                    var getVersion = Marshal.GetDelegateForFunctionPointer(wineGetVersion, typeof(GetWineVersionDelegate)) as GetWineVersionDelegate;
+                    var getVersion =
+                        Marshal.GetDelegateForFunctionPointer(wineGetVersion, typeof(GetWineVersionDelegate)) as
+                            GetWineVersionDelegate;
                     WineVersion = getVersion();
                 }
             }
+
         }
 
-        // Is64BitOperatingSystem has been added in .NET Framework 4.0
-        var m_get_Is64BitOperatingSystem =
-            typeof(Environment).GetProperty("Is64BitOperatingSystem")?.GetGetMethod();
-        if (m_get_Is64BitOperatingSystem != null)
-            current |= (bool) m_get_Is64BitOperatingSystem.Invoke(null, new object[0]) ? Platform.Bits64 : 0;
-        else
-            current |= IntPtr.Size >= 8 ? Platform.Bits64 : 0;
-
-        if ((current.Is(Platform.MacOS) || current.Is(Platform.Linux)) && Type.GetType("Mono.Runtime") != null)
+        if (PlatformDetection.OS is OSKind.Linux)
         {
-            string arch;
-            IntPtr result;
+            var utsname_linux = new utsname_linux();
 
-            if (current.Is(Platform.MacOS))
-            {
-                var utsname_osx = new utsname_osx();
-                result = uname_osx(ref utsname_osx);
-                arch = utsname_osx.machine;
-            }
-            else
-            {
-                // Linux
-                var utsname_linux = new utsname_linux();
-                result = uname_linux(ref utsname_linux);
-                arch = utsname_linux.machine;
-
-                LinuxArchitecture = utsname_linux.machine;
-                LinuxKernelVersion = utsname_linux.version;
-            }
-
-            if (result == IntPtr.Zero && (arch.StartsWith("aarch") || arch.StartsWith("arm")))
-                current |= Platform.ARM;
+            LinuxArchitecture = utsname_linux.machine;
+            LinuxKernelVersion = utsname_linux.version;
         }
-        else
+        else if (PlatformDetection.OS is OSKind.OSX)
         {
-            // Detect ARM based on PE info or uname.
-            typeof(object).Module.GetPEKind(out var peKind, out var machine);
-            if (machine == (ImageFileMachine) 0x01C4 /* ARM, .NET Framework 4.5 */)
-                current |= Platform.ARM;
-        }
+            var utsname_osx = new utsname_osx();
 
-        PlatformHelper.Current = current;
+            LinuxArchitecture = utsname_osx.machine;
+            LinuxKernelVersion = utsname_osx.version;
+        }
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
