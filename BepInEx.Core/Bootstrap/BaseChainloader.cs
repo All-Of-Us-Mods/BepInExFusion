@@ -242,21 +242,6 @@ public abstract class BaseChainloader<TPlugin>
                     continue;
                 }
 
-                // Perform checks that will prevent loading plugins in this run
-                var filters = pluginInfo.Processes.ToList();
-                var invalidProcessName = filters.Count != 0 &&
-                                         filters.All(x => !string.Equals(x.ProcessName.Replace(".exe", ""),
-                                                                         Paths.ProcessName,
-                                                                         StringComparison
-                                                                             .InvariantCultureIgnoreCase));
-
-                if (invalidProcessName)
-                {
-                    Logger.Log(LogLevel.Warning,
-                               $"Skipping [{pluginInfo}] because of process filters ({string.Join(", ", pluginInfo.Processes.Select(p => p.ProcessName).ToArray())})");
-                    continue;
-                }
-
                 loadedVersion = pluginInfo;
                 dependencyDict[pluginInfo.Metadata.GUID] = pluginInfo.Dependencies.Select(d => d.DependencyGUID);
                 pluginsByGuid[pluginInfo.Metadata.GUID] = pluginInfo;
