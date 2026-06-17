@@ -8,6 +8,7 @@ using BepInEx.Preloader.Core.Logging;
 using BepInEx.Preloader.Core.Patching;
 using BepInEx.Preloader.RuntimeFixes;
 using BepInEx.Unity.Common;
+using BepInEx.Unity.IL2CPP.Logging;
 using MonoMod.Utils;
 
 namespace BepInEx.Unity.IL2CPP;
@@ -26,21 +27,13 @@ public static class Preloader
         try
         {
             HarmonyBackendFix.Initialize();
-            //ConsoleSetOutFix.Apply();
             UnityInfo.Initialize(Paths.ExecutablePath, Paths.GameDataPath, EnvVars.FUSION_UNITY_VERSION);
 
             ConsoleManager.Initialize(false, true);
 
             PreloaderLog = new PreloaderConsoleListener();
             Logger.Listeners.Add(PreloaderLog);
-
-            if (ConsoleManager.ConsoleEnabled)
-            {
-                ConsoleManager.CreateConsole();
-                Logger.Listeners.Add(new ConsoleLogListener());
-            }
-
-            RedirectStdErrFix.Apply();
+            Logger.Listeners.Add(new AndroidLogListener());
 
             ChainloaderLogHelper.PrintLogInfo(Log);
 
@@ -78,9 +71,7 @@ public static class Preloader
                 assemblyPatcher.PatchAndLoad();
             }
 
-
             Logger.Listeners.Remove(PreloaderLog);
-
 
             Chainloader = new IL2CPPChainloader();
 

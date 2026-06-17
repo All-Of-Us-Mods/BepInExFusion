@@ -15,9 +15,6 @@ internal static class FusionCoreEntrypoint
     [UnmanagedCallersOnly(EntryPoint = "Start")]
     public static void Start()
     {
-        Console.SetOut(new FusionInterop.InteropWriter());
-        Console.SetError(new FusionInterop.InteropWriter());
-
         // We set it to the current directory first as a fallback, but try to use the same location as the .exe file.
         var silentExceptionLog = Environment.GetEnvironmentVariable("BEPINEX_PRELOADER_LOG") ??
                                  $"preloader_{DateTime.Now:yyyyMMdd_HHmmss_fff}.log";

@@ -141,8 +141,6 @@ public class IL2CPPChainloader : BaseChainloader<BasePlugin>
 
         if (!ConfigDiskWriteUnityLog.Value) DiskLogListener.BlacklistedSources.Add("Unity");
 
-        ChainloaderLogHelper.RewritePreloaderLogs();
-
         Logger.Sources.Add(new IL2CPPLogSource());
     }
 

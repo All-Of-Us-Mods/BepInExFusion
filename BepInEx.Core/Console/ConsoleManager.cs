@@ -73,7 +73,7 @@ public static class ConsoleManager
         }
     }
 
-    public static bool ConsoleEnabled => EnableConsoleArgOverride ?? ConfigConsoleEnabled.Value;
+    public static bool ConsoleEnabled => false;
 
     internal static IConsoleDriver Driver { get; set; }
 
