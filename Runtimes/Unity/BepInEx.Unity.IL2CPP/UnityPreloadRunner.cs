@@ -11,6 +11,7 @@ internal static class UnityPreloaderRunner
     public static void PreloaderMain()
     {
         FusionInterop.set_loader_stage(FusionInterop.LoaderStage.Preloader);
+        FusionInterop.set_loader_message("Running Preloader...");
         PlatformUtils.SetPlatform();
 
         Paths.SetExecutablePath(EnvVars.FUSION_GAME_BINARY,

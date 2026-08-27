@@ -92,6 +92,7 @@ public class IL2CPPChainloader : BaseChainloader<BasePlugin>
         originalInvoke = RuntimeInvokeDetour.GenerateTrampoline<RuntimeInvokeDetourDelegate>();
 
         PreloaderLogger.Log.Log(LogLevel.Debug, "Runtime invoke patched");
+        FusionInterop.set_loader_message("Initialized Chainloader...");
     }
 
     private static IntPtr OnInvokeMethod(IntPtr method, IntPtr obj, IntPtr parameters, IntPtr exc)
@@ -105,6 +106,7 @@ public class IL2CPPChainloader : BaseChainloader<BasePlugin>
             try
             {
                 FusionInterop.set_loader_stage(FusionInterop.LoaderStage.Chainloader);
+                FusionInterop.set_loader_message("Running Chainloader...");
                 if (ConfigUnityLogging.Value)
                 {
                     Logger.Sources.Add(new IL2CPPUnityLogSource());
