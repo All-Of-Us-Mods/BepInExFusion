@@ -10,11 +10,11 @@ internal static partial class FusionInterop
     [LibraryImport(LIBRARY_NAME)]
     public static unsafe partial void set_loader_stage(LoaderStage loadingStage);
 
-    [LibraryImport(LIBRARY_NAME)]
-    public static unsafe partial void set_loader_message([MarshalAs(UnmanagedType.LPStr)] string message);
+    [LibraryImport(LIBRARY_NAME, StringMarshalling = StringMarshalling.Utf8)]
+    public static unsafe partial void set_loader_message(string message);
 
     [LibraryImport(LIBRARY_NAME, StringMarshalling = StringMarshalling.Utf8)]
-    public static unsafe partial void write_log_level(int logLevel, [MarshalAs(UnmanagedType.LPStr)] string message);
+    public static unsafe partial void write_log_level(int logLevel, string message);
 
     [LibraryImport(LIBRARY_NAME)]
     // ReSharper disable once InconsistentNaming
