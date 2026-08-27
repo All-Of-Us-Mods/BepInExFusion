@@ -101,8 +101,10 @@ public class IL2CPPChainloader : BaseChainloader<BasePlugin>
         var unhook = false;
 
         if (methodName == "Internal_ActiveSceneChanged")
+        {
             try
             {
+                FusionInterop.set_loader_stage(FusionInterop.LoaderStage.Chainloader);
                 if (ConfigUnityLogging.Value)
                 {
                     Logger.Sources.Add(new IL2CPPUnityLogSource());
@@ -122,6 +124,11 @@ public class IL2CPPChainloader : BaseChainloader<BasePlugin>
                 Logger.Log(LogLevel.Fatal, "Unable to execute IL2CPP chainloader");
                 Logger.Log(LogLevel.Error, ex);
             }
+            finally
+            {
+                FusionInterop.set_loader_stage(FusionInterop.LoaderStage.Finished);
+            }
+        }
 
         var result = originalInvoke(method, obj, parameters, exc);
 
@@ -146,6 +153,7 @@ public class IL2CPPChainloader : BaseChainloader<BasePlugin>
 
     public override BasePlugin LoadPlugin(PluginInfo pluginInfo, Assembly pluginAssembly)
     {
+        FusionInterop.set_loader_message($"Loading {pluginInfo.Metadata.Name}");
         var type = pluginAssembly.GetType(pluginInfo.TypeName);
 
         var pluginInstance = (BasePlugin) Activator.CreateInstance(type);

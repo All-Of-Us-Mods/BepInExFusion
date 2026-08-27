@@ -282,6 +282,7 @@ internal static partial class Il2CppInteropManager
     }
 
     private static void DownloadUnityAssemblies() {
+        FusionInterop.set_loader_message("Downloading Unity assemblies...");
         var unityVersion = UnityInfo.Version;
         var version = $"{unityVersion.Major}.{unityVersion.Minor}.{unityVersion.Build}";
         var source = UnityBaseLibrariesSource.Value.Replace("{VERSION}", version);
@@ -323,6 +324,7 @@ internal static partial class Il2CppInteropManager
 
     private static List<AsmResolver.DotNet.AssemblyDefinition> RunCpp2Il()
     {
+        FusionInterop.set_loader_message("Running Cpp2IL...");
         var metadataPath = Path.Combine(Paths.GameRootPath,
                                         GlobalMetadataPath.Value
                                                           .Replace("{BepInEx}", Paths.BepInExRootPath)
@@ -373,6 +375,7 @@ internal static partial class Il2CppInteropManager
 
     private static void RunIl2CppInteropGenerator(List<AsmResolver.DotNet.AssemblyDefinition> sourceAssemblies)
     {
+        FusionInterop.set_loader_message("Generated IL2CPP Interop files...");
         var opts = new GeneratorOptions
         {
             GameAssemblyPath = ScanMethodRefs.Value ? GameAssemblyPath : null,
