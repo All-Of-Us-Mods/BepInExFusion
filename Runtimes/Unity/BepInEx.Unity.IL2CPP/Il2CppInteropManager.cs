@@ -375,7 +375,7 @@ internal static partial class Il2CppInteropManager
 
     private static void RunIl2CppInteropGenerator(List<AsmResolver.DotNet.AssemblyDefinition> sourceAssemblies)
     {
-        FusionInterop.set_loader_message("Generated IL2CPP Interop files...");
+        FusionInterop.set_loader_message("Generating IL2CPP Interop files...");
         var opts = new GeneratorOptions
         {
             GameAssemblyPath = ScanMethodRefs.Value ? GameAssemblyPath : null,
