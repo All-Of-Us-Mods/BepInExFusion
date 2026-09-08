@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -142,6 +143,18 @@ public class IL2CPPChainloader : BaseChainloader<BasePlugin>
         }
 
         return result;
+    }
+
+    protected override IList<PluginInfo> DiscoverPlugins()
+    {
+        var plugins = DiscoverPluginsFrom(Paths.PluginPath).ToList();
+        foreach (var pluginPath in FusionCoreEntrypoint.AuxiliaryPluginFolders)
+        {
+            Logger.Log(LogLevel.Info, "Loading auxiliary plugin path " + pluginPath);
+            plugins.AddRange(DiscoverPluginsFrom(pluginPath));
+        }
+
+        return plugins;
     }
 
     protected override void InitializeLoggers()
