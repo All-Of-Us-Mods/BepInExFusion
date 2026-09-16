@@ -74,7 +74,7 @@ internal static partial class Il2CppInteropManager
 
     private static readonly ConfigEntry<bool> ScanMethodRefs = ConfigFile.CoreConfig.Bind(
      "IL2CPP", "ScanMethodRefs",
-     Environment.Is64BitProcess,
+     false,
      "If enabled, Il2CppInterop will use xref to find dead methods and generate CallerCount attributes.");
 
     private static readonly ConfigEntry<bool> DumpDummyAssemblies = ConfigFile.CoreConfig.Bind(
