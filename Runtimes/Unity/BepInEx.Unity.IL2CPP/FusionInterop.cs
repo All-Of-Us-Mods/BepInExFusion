@@ -7,6 +7,8 @@ internal static partial class FusionInterop
 {
     private const string LIBRARY_NAME = "fusion";
 
+    public static bool LowMemoryMode => get_low_memory_mode() == 1;
+
     [LibraryImport(LIBRARY_NAME)]
     public static unsafe partial void set_loader_stage(LoaderStage loadingStage);
 
@@ -23,6 +25,9 @@ internal static partial class FusionInterop
 
     [LibraryImport(LIBRARY_NAME)]
     public static unsafe partial void unhook(IntPtr target);
+
+    [LibraryImport(LIBRARY_NAME)]
+    public static unsafe partial byte get_low_memory_mode();
 
     public enum LoaderStage : byte
     {

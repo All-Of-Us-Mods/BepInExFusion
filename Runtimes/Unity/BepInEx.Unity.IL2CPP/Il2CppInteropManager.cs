@@ -348,9 +348,13 @@ internal static partial class Il2CppInteropManager
             cpp2IlLogger.LogError($"[{s}] {message.Trim()}");
 
         var unityVersion = UnityInfo.Version;
-        Cpp2IlApi.InitializeLibCpp2Il(GameAssemblyPath, metadataPath, unityVersion, false);
+        
+        Cpp2IlApi.RuntimeOptions ??= new Cpp2IlRuntimeArgs();
+        Cpp2IlApi.RuntimeOptions.LowMemoryMode = FusionInterop.LowMemoryMode;
 
-        List<Cpp2IlProcessingLayer> processingLayers = new() { new AttributeInjectorProcessingLayer(), };
+        Cpp2IlApi.InitializeLibCpp2Il(GameAssemblyPath, metadataPath, unityVersion);
+
+        List<Cpp2IlProcessingLayer> processingLayers = [new AttributeInjectorProcessingLayer()];
 
         foreach (var cpp2IlProcessingLayer in processingLayers)
         {
@@ -385,6 +389,8 @@ internal static partial class Il2CppInteropManager
             ObfuscatedNamesRegex = !string.IsNullOrEmpty(ConfigUnhollowerDeobfuscationRegex.Value)
                                        ? new Regex(ConfigUnhollowerDeobfuscationRegex.Value)
                                        : null,
+            NoXrefCache = true,
+            Parallel = !FusionInterop.LowMemoryMode
         };
 
         if (File.Exists(RenameMapPath))
