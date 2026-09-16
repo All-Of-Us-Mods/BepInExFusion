@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Security.Cryptography;
@@ -29,8 +28,6 @@ using Il2CppInterop.HarmonySupport;
 using Il2CppInterop.Runtime.Startup;
 using LibCpp2IL;
 using Microsoft.Extensions.Logging;
-using Mono.Cecil;
-using MonoMod.Utils;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 using MSLoggerFactory = Microsoft.Extensions.Logging.LoggerFactory;
 
@@ -256,6 +253,8 @@ internal static partial class Il2CppInteropManager
 
         try
         {
+            Logger.LogInfo($"Low Memory Mode: {FusionInterop.LowMemoryMode}");
+
             Directory.CreateDirectory(IL2CPPInteropAssemblyPath);
             Directory.EnumerateFiles(IL2CPPInteropAssemblyPath, "*.dll").Do(File.Delete);
 

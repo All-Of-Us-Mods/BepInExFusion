@@ -1,7 +1,6 @@
 using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using BepInEx.IL2CPP.RuntimeFixes;
 using BepInEx.Logging;
 using BepInEx.Preloader.Core;
 using BepInEx.Preloader.Core.Logging;

@@ -4,14 +4,13 @@ using System.IO;
 using System.Runtime.InteropServices;
 using BepInEx.Preloader.Core;
 using BepInEx.Unity.IL2CPP.Utils;
-using Il2CppSystem.Runtime.Remoting;
 using MonoMod.Utils;
 
 namespace BepInEx.Unity.IL2CPP;
 
 internal static class FusionCoreEntrypoint
 {
-    public static List<string> AuxiliaryPluginFolders = [];
+    public static readonly List<string> AuxiliaryPluginFolders = [];
     
     [StructLayout(LayoutKind.Sequential)]
     public unsafe struct AuxPluginFolderList
