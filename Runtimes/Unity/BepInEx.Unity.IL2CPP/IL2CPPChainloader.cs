@@ -82,7 +82,7 @@ public class IL2CPPChainloader : BaseChainloader<BasePlugin>
             return;
         }
 
-        var runtimeInvokePtr = NativeLibrary.GetExport(il2CppHandle, FusionInterop.get_il2cpp_api("il2cpp_runtime_invoke"));
+        var runtimeInvokePtr = NativeLibrary.GetExport(il2CppHandle, FusionInterop.GetIl2CppApi("il2cpp_runtime_invoke"));
         runtimeInvokePtr = XrefScannerLowLevel.JumpTargets(runtimeInvokePtr).First();
         
         PreloaderLogger.Log.Log(LogLevel.Debug, $"Runtime invoke pointer: 0x{runtimeInvokePtr.ToInt64():X}");

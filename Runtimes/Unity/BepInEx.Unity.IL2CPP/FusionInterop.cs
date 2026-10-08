@@ -10,7 +10,15 @@ internal static partial class FusionInterop
     public static bool LowMemoryMode => get_low_memory_mode() == 1;
 
     [LibraryImport(LIBRARY_NAME, StringMarshalling = StringMarshalling.Utf8)]
-    public static unsafe partial string get_il2cpp_api(string name);
+    public static unsafe partial nint get_il2cpp_api(string name);
+
+    public static string GetIl2CppApi(string name)
+    {
+        var ptr = get_il2cpp_api(name);
+        if (ptr == nint.Zero) return name;
+
+        return Marshal.PtrToStringUTF8(ptr) ?? name;
+    }
 
     [LibraryImport(LIBRARY_NAME)]
     public static unsafe partial void set_loader_stage(LoaderStage loadingStage);
