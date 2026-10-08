@@ -15,8 +15,8 @@ jobs:
                 with:
                     script: |
                         let buildType = "Development";
-                        if (context.ref == "refs/heads/master" && context.repo.owner == "BepInEx") {
-                            buildType = "BleedingEdge";
+                        if (context.ref == "refs/heads/master" && context.repo.owner == "All-Of-Us-Mods") {
+                            buildType = "Fusion";
                         }
                         core.setOutput("build_type", buildType);
                         let shortHash = "";

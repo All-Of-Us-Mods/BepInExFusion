@@ -29,7 +29,8 @@ public class BuildContext : FrostingContext
     {
         Release,
         Development,
-        BleedingEdge
+        BleedingEdge,
+        Fusion
     }
 
     internal readonly DistributionTarget[] Distributions =
@@ -77,6 +78,7 @@ public class BuildContext : FrostingContext
         ProjectBuildType.Release      => "",
         ProjectBuildType.Development  => "dev",
         ProjectBuildType.BleedingEdge => $"be.{BuildId}",
+        ProjectBuildType.Fusion       => $"fusion.{BuildId}",
         var _                         => throw new ArgumentOutOfRangeException()
     };
 
@@ -117,7 +119,7 @@ public sealed class CompileTask : FrostingTask<BuildContext>
         {
             buildSettings.MSBuildSettings = new()
             {
-                VersionSuffix = $"fusion.{ctx.VersionSuffix}",
+                VersionSuffix = ctx.VersionSuffix,
                 Properties =
                 {
                     ["SourceRevisionId"] = new[] { ctx.CurrentCommit.Sha },
