@@ -7,7 +7,6 @@ using BepInEx.Bootstrap;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 using BepInEx.Preloader.Core;
-using BepInEx.Preloader.Core.Logging;
 using BepInEx.Unity.IL2CPP.Hook;
 using BepInEx.Unity.IL2CPP.Logging;
 using BepInEx.Unity.IL2CPP.Utils;
